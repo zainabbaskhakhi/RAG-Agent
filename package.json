@@ -1,0 +1,46 @@
+{
+  "name": "langchain-supabase-rag-backend",
+  "version": "1.0.0",
+  "description": "🚀 Production-Ready RAG Agent with LangGraph + Supabase A complete, production-ready Retrieval-Augmented Generation (RAG) agent that answers questions using CSV data, powered by LangGraph, LangChain, OpenAI, and Supabase pgvector.",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "ingest": "node scripts/ingest.js",
+    "email:check": "node scripts/automated-ingest.js once",
+    "email:watch": "node scripts/automated-ingest.js watch",
+    "test:uid": "node scripts/test-uid-generation.js"
+  },
+  "keywords": [
+    "rag",
+    "langchain",
+    "langgraph",
+    "supabase",
+    "openai",
+    "vector-search"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@langchain/community": "^1.0.4",
+    "@langchain/core": "^1.0.6",
+    "@langchain/langgraph": "^1.0.2",
+    "@langchain/openai": "^1.1.2",
+    "@langchain/textsplitters": "^1.0.0",
+    "@supabase/supabase-js": "^2.84.0",
+    "cors": "^2.8.5",
+    "csv-parse": "^6.1.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "imap": "^0.8.19",
+    "langchain": "^1.0.6",
+    "mailparser": "^3.9.0",
+    "multer": "^2.0.2",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
