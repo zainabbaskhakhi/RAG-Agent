@@ -501,20 +501,8 @@ Supabase Documentation
 OpenAI API Documentation
 
 
-
-❌ Files to DELETE (IMAP-related)
-bash# Delete these if they exist:
-src/services/email.js
-scripts/automated-ingest.js
-scripts/debug-email.js
-
 Step 1: Creating new Zap
  Step 2: Gmail trigger setup
  Step 3: Filter setup
  Step 4: Webhook setup
  Step 5: Publishing
-
-Cloud name = dxjtkohu9
-API key = 586656294655322
-API secret = hwHHqiRPz1CWItIcIbur1Md2HGo
-CLOUDINARY_URL=cloudinary://586656294655322:hwHHqiRPz1CWItIcIbur1Md2HGo@dxjtkohu9
