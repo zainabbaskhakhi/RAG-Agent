@@ -321,6 +321,8 @@ export async function processIncomingEmails(options = {}) {
     if (messageIds.length === 0) {
       console.log('   ℹ No unread messages found');
       imap.end();
+       const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+       console.log('duration', duration)
       return { attachments: [], processed: 0, duration: 0 };
     }
 
@@ -349,7 +351,7 @@ export async function processIncomingEmails(options = {}) {
     imap.end();
 
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-
+    console.log('duration', duration)
     console.log(`\n${'='.repeat(60)}`);
     console.log(`✅ Email processing completed`);
     console.log(`   📎 CSV attachments found: ${attachments.length}`);
