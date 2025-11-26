@@ -462,32 +462,54 @@ bash
 # View database directly in Supabase dashboard
 # Or query via API:
 curl http://localhost:5000/api/ask/stats
-🚀 Deployment
-Deploy to Production
-Set environment to production:
-env
-   NODE_ENV=production
-Use process manager:
-bash
+## 🚀 Deployment
+
+### Option 1: Docker (Recommended)
+
+1. **Build and Run with Docker Compose**
+   ```bash
+   docker-compose up --build -d
+   ```
+   This will start both the API (port 3000) and the Email Watcher.
+
+2. **Check Logs**
+   ```bash
+   docker-compose logs -f
+   ```
+
+3. **Stop Services**
+   ```bash
+   docker-compose down
+   ```
+
+### Option 2: PM2 (Process Manager)
+
+If you prefer running on bare metal or EC2 without Docker:
+
+1. **Install PM2**
+   ```bash
    npm install -g pm2
-   pm2 start src/server.js --name rag-agent
+   ```
+
+2. **Start Services**
+   ```bash
+   pm2 start ecosystem.config.cjs
+   ```
+
+3. **Monitor**
+   ```bash
+   pm2 monit
+   ```
+
+4. **Persist across restarts**
+   ```bash
    pm2 save
    pm2 startup
-Set up reverse proxy (nginx):
-nginx
-   server {
-       listen 80;
-       server_name your-domain.com;
+   ```
 
-       location /api {
-           proxy_pass http://localhost:5000;
-           proxy_http_version 1.1;
-           proxy_set_header Upgrade $http_upgrade;
-           proxy_set_header Connection 'upgrade';
-           proxy_set_header Host $host;
-           proxy_cache_bypass $http_upgrade;
-       }
-   }
+### Option 3: AWS ECS (Production)
+
+Refer to `architecture_recommendations.md` for a detailed AWS deployment guide.
 📝 License
 MIT
 

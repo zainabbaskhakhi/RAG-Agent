@@ -87,6 +87,7 @@ CREATE TRIGGER update_documents_updated_at
 CREATE TABLE IF NOT EXISTS ingestion_jobs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     file_name TEXT NOT NULL,
+    file_hash TEXT, -- MD5/SHA256 hash for idempotency
     status TEXT NOT NULL CHECK (status IN ('pending', 'processing', 'completed', 'failed')),
     total_chunks INTEGER,
     processed_chunks INTEGER DEFAULT 0,
@@ -94,6 +95,10 @@ CREATE TABLE IF NOT EXISTS ingestion_jobs (
     started_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     completed_at TIMESTAMP WITH TIME ZONE
 );
+
+-- Create an index on file_hash for faster idempotency checks
+CREATE INDEX IF NOT EXISTS ingestion_jobs_file_hash_idx 
+ON ingestion_jobs (file_hash);
 
 -- Add row level security (RLS) policies if needed
 -- ALTER TABLE units_vacancy ENABLE ROW LEVEL SECURITY;

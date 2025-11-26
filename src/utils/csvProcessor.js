@@ -4,6 +4,13 @@ import { parse } from 'csv-parse';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { cleanText, extractTextFromRow, isValidText } from './textCleaner.js';
 import { RAG_CONFIG } from '../config/openai.js';
+import { z } from 'zod';
+
+// Validation Schema
+const UnitVacancySchema = z.object({
+  'Property Name': z.string().min(1, "Property Name is required"),
+  'Unit': z.string().min(1, "Unit is required"),
+}).passthrough();
 
 /**
  * Read and parse CSV file
@@ -11,7 +18,7 @@ import { RAG_CONFIG } from '../config/openai.js';
 export async function readCSV(filePath) {
   return new Promise((resolve, reject) => {
     const records = [];
-    
+
     fs.createReadStream(filePath)
       .pipe(parse({
         columns: true,
@@ -30,6 +37,33 @@ export async function readCSV(filePath) {
         reject(error);
       });
   });
+}
+
+/**
+ * Validate CSV rows
+ */
+export function validateRows(rows) {
+  console.log('🔍 Validating CSV rows...');
+  const errors = [];
+
+  rows.forEach((row, index) => {
+    const result = UnitVacancySchema.safeParse(row);
+    if (!result.success) {
+      const errorMessages = result.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ');
+      errors.push(`Row ${index + 1}: ${errorMessages}`);
+    }
+  });
+
+  if (errors.length > 0) {
+    console.error(`❌ Found ${errors.length} validation errors:`);
+    errors.slice(0, 10).forEach(e => console.error(`   ${e}`));
+    if (errors.length > 10) console.error(`   ...and ${errors.length - 10} more`);
+
+    throw new Error(`CSV Validation Failed: ${errors.length} rows have invalid data. First error: ${errors[0]}`);
+  }
+
+  console.log('✓ All rows passed validation');
+  return true;
 }
 
 /**
@@ -71,7 +105,7 @@ export async function splitDocuments(documents) {
   });
 
   const chunks = [];
-  
+
   for (let i = 0; i < documents.length; i++) {
     const doc = documents[i];
     const splits = await splitter.createDocuments(
@@ -101,16 +135,19 @@ export async function splitDocuments(documents) {
  */
 export async function processCSV(filePath) {
   console.log(`\n📄 Processing CSV: ${filePath}`);
-  
+
   // Read CSV
   const rows = await readCSV(filePath);
-  
+
+  // Validate rows
+  validateRows(rows);
+
   // Convert to documents
   const documents = rowsToDocuments(rows);
-  
+
   // Split into chunks
   const chunks = await splitDocuments(documents);
-  
+
   return {
     rows,
     documents,

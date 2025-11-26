@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    restart: always
+    volumes:
+      - ./uploads:/app/uploads
+      - ./temp:/app/temp
+
+  # Watcher service removed - using Zapier webhook instead
